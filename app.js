@@ -25,7 +25,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDB");
+mongoose.connect("mongodb://localhost:27017/weBook");
 
 const postSchema = new mongoose.Schema({
   judul: String,
@@ -67,13 +67,22 @@ app.get("/register", function(req, res){
 });
 
 app.get("/books", function(req, res){
+
   Post.find({}, function(err,posts){
-    res.render("books", {posts: posts})
-  })
+    if (req.isAuthenticated()){
+      res.render("books", {posts: posts})
+    } else {
+      res.redirect("/login");
+    }
+  });
 });
 
 app.get("/compose", function(req, res){
-  res.render("compose");
+  if (req.isAuthenticated()){
+    res.render("compose");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/compose", function(req,res){
@@ -135,6 +144,20 @@ app.post("/login", function(req, res){
       passport.authenticate("local")(req,res, function(){
         res.redirect("/utama");
       });
+    }
+  });
+
+});
+
+app.post("/delete", function(req, res){
+  const checkedItemId = req.body.checkbox;
+
+  Post.findByIdAndRemove(checkedItemId, function(err){
+    if (err) {
+      console.log(err);
+    } else {
+      console.log("Successfully to Remove the Item.");
+      res.redirect("/books");
     }
   });
 

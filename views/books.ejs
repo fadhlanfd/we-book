@@ -9,7 +9,7 @@
 
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="/">Sign out</a>
+      <a class="nav-link" href="/logout">Sign out</a>
     </li>
   </ul>
 </nav>
@@ -49,16 +49,20 @@
               <th>ISBN</th>
               <th>Penerbit</th>
               <th>Deskripsi</th>
+              <th>Hapus</th>
             </tr>
           </thead>
           <tbody>
             <% posts.forEach(function(post){ %>
-            <tr>
-                <td><%= post.judul %></td>
-                <td><%= post.isbn %></td>
-                <td><%= post.penerbit %></td>
-                <td><%= post.deskripsi %></td>
-            </tr>
+              <form action="/delete" method="post">
+                <tr>
+                    <td><%= post.judul %></td>
+                    <td><%= post.isbn %></td>
+                    <td><%= post.penerbit %></td>
+                    <td><%= post.deskripsi %></td>
+                    <td><input type="checkbox" onChange="this.form.submit()" name="checkbox" value="<%= post._id %>"></td>
+                </tr>
+              </form>
             <% }); %>
           </tbody>
         </table>
